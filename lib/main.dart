@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:map2/app/domain/ui/pages/welcome/splash_page.dart';
 
 void main() {
-runApp(const MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
