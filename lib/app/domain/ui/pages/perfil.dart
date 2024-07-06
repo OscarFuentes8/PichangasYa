@@ -1,9 +1,32 @@
 import 'package:flutter/material.dart';
-// ignore: unused_import
-import 'styles.dart';
+import 'package:image_picker/image_picker.dart';
+import 'dart:io';
+// Importa las nuevas páginas
+import 'mis_favoritos.dart';
+import 'reservas_adquiridas.dart';
+import 'historial_de_reservas.dart';
+import 'login_page.dart'; // Asegúrate de tener esta página
 
-class PerfilPage extends StatelessWidget {
+class PerfilPage extends StatefulWidget {
   const PerfilPage({Key? key}) : super(key: key);
+
+  @override
+  _PerfilPageState createState() => _PerfilPageState();
+}
+
+class _PerfilPageState extends State<PerfilPage> {
+  File? _image;
+
+  Future<void> _pickImage() async {
+    final pickedFile =
+        await ImagePicker().pickImage(source: ImageSource.gallery);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -17,14 +40,15 @@ class PerfilPage extends StatelessWidget {
               child: Stack(
                 alignment: Alignment.bottomRight,
                 children: [
-                  const CircleAvatar(
+                  CircleAvatar(
                     radius: 70,
-                    backgroundImage: AssetImage('assets/images/avatar1.jpg'),
+                    backgroundImage: _image != null
+                        ? FileImage(_image!)
+                        : const AssetImage('assets/images/avatar1.jpg')
+                            as ImageProvider,
                   ),
                   GestureDetector(
-                    onTap: () {
-                      // Acción al hacer clic en el icono de cámara para cambiar la foto de perfil
-                    },
+                    onTap: _pickImage,
                     child: const CircleAvatar(
                       radius: 20,
                       backgroundColor: Colors.white,
@@ -56,13 +80,16 @@ class PerfilPage extends StatelessWidget {
               ),
             ),
             const SizedBox(height: 24),
-            _buildSection('Mis Favoritos', Icons.favorite),
-            _buildSection('Reservas Adquiridas', Icons.event),
-            _buildSection('Historial de Reservas', Icons.history),
+            _buildSection(context, 'Mis Favoritos', Icons.favorite,
+                const MisFavoritosPage()),
+            _buildSection(context, 'Reservas Adquiridas', Icons.event,
+                const ReservasAdquiridasPage()),
+            _buildSection(context, 'Historial de Reservas', Icons.history,
+                const HistorialReservasPage()),
             const SizedBox(height: 24),
             ElevatedButton(
               onPressed: () {
-                // Acción al hacer clic en el botón de Cerrar Sesión
+                _signOut(context);
               },
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
@@ -81,7 +108,8 @@ class PerfilPage extends StatelessWidget {
     );
   }
 
-  Widget _buildSection(String title, IconData icon) {
+  Widget _buildSection(
+      BuildContext context, String title, IconData icon, Widget page) {
     return Container(
       margin: const EdgeInsets.only(top: 24),
       padding: const EdgeInsets.all(16),
@@ -97,20 +125,39 @@ class PerfilPage extends StatelessWidget {
           ),
         ],
       ),
-      child: Row(
-        children: <Widget>[
-          Icon(icon, size: 32, color: const Color.fromARGB(255, 138, 219, 6)),
-          const SizedBox(width: 16),
-          Text(
-            title,
-            style: const TextStyle(
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-              color: Colors.black,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => page),
+          );
+        },
+        child: Row(
+          children: <Widget>[
+            Icon(icon, size: 32, color: const Color.fromARGB(255, 138, 219, 6)),
+            const SizedBox(width: 16),
+            Text(
+              title,
+              style: const TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.black,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
+    );
+  }
+
+  void _signOut(BuildContext context) {
+    // Implementa la lógica para cerrar sesión, por ejemplo, eliminando las credenciales guardadas
+
+    // Navegar a la página de inicio de sesión y eliminar todas las páginas anteriores
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => LoginPage()),
+      (Route<dynamic> route) => false,
     );
   }
 }

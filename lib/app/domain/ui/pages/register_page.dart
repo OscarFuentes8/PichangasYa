@@ -11,17 +11,15 @@ class RegisterPage extends StatefulWidget {
   State<RegisterPage> createState() => _RegisterPageState();
 }
 
-
-
 class _RegisterPageState extends State<RegisterPage>
-  with SingleTickerProviderStateMixin {
+    with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _textAnimation;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
-  
+
   // ignore: unused_field
   final _formKey = GlobalKey<FormState>();
 
@@ -49,20 +47,18 @@ class _RegisterPageState extends State<RegisterPage>
     super.dispose();
   }
 
-
-
-
-  Future<void> registerUser(String email, String contrasena,String name) async {
-    final url = Uri.parse('http://10.0.2.2:3000/user'); // Cambiar la dirección IP según sea necesario
+  Future<void> registerUser(
+      String email, String contrasena, String name) async {
+    final url = Uri.parse(
+        'http://localhost:3000/user'); // Cambiar la dirección IP según sea necesario
     try {
       final response = await http.post(
         url,
         headers: {'Content-Type': 'application/json'},
-        body:json.encode({
+        body: json.encode({
           'email': email,
           'contrasena': contrasena,
           'name': name,
-
         }),
       );
 
@@ -78,7 +74,6 @@ class _RegisterPageState extends State<RegisterPage>
           context,
           MaterialPageRoute(builder: (context) => const HomePage()),
         );
-        
       } else {
         // Mostrar un mensaje de error
         // ignore: use_build_context_synchronously
@@ -220,7 +215,8 @@ class _RegisterPageState extends State<RegisterPage>
                 onPressed: () {
                   if (_formKey.currentState?.validate() ?? false) {
                     // Llamar a la función login con email y contraseña
-                    registerUser(_emailController.text, _passwordController.text,_nameController.text);
+                    registerUser(_emailController.text,
+                        _passwordController.text, _nameController.text);
                   }
                 },
                 style: ElevatedButton.styleFrom(
