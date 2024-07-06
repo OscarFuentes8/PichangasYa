@@ -180,7 +180,7 @@ class _HomePageState extends State<HomePage> {
               ? const ReservationPage()
               : _currentIndex == 2
                   ? const PerfilPage()
-                  : const SoportePage(),
+                  : SoportePage(),
       bottomNavigationBar: BottomNavigationBarWidget(
         currentIndex: _currentIndex,
         onTap: _onItemTapped,
@@ -227,7 +227,8 @@ class _HomePageState extends State<HomePage> {
                   onPressed: () {
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => getPage(cancha['map'])),
+                      MaterialPageRoute(
+                          builder: (context) => getPage(cancha['map'])),
                     );
                   },
                   mini: true,
